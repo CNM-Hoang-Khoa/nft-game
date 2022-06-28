@@ -30,8 +30,8 @@ contract LipToken is ERC721, Ownable {
       emit NewLip(msg.sender, COUNTER, _dna);
       COUNTER++;
     }
-    // function mintMyNft(address toAddress) public onlyOwner(){
-    //     _safeMint(toAddress, COUNTER);
-    //     COUNTER++;
-    // }
+    
+    function getLips() public view returns (Lip[] memory) {
+      return lips;
+    }
 }
