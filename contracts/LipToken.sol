@@ -30,6 +30,15 @@ contract LipToken is ERC721, Ownable {
       emit NewLip(msg.sender, COUNTER, _dna);
       COUNTER++;
     }
+
+    function _getRandomDna(string memory _str) internal pure returns(uint256) {
+      uint256 randomNum = uint256(keccak256(abi.encodePacked(_str)));
+      return randomNum % 10**16;
+    }
+    function createRandomLip(string memory _name) public payable {
+      uint256 randDna = _getRandomDna(_name);
+      _createLip(_name, randDna);
+    }
     
     function getLips() public view returns (Lip[] memory) {
       return lips;
