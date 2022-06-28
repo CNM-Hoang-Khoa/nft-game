@@ -15,12 +15,23 @@ contract LipToken is ERC721, Ownable {
       uint8 rarity;
     }
 
+    Lip[] public lips;
+
+    event NewLip(address indexed owner, uint256 id, uint256 dna);
+
     constructor(string memory _name, string memory _symbol)
         ERC721(_name, _symbol)
     {}
 
-    function mintMyNft(address toAddress) public onlyOwner(){
-        _safeMint(toAddress, COUNTER);
-        COUNTER++;
+    function _createLip(string memory _name, uint256 _dna) internal {
+      Lip memory newLip = Lip(_name, COUNTER, _dna, 1, 50);
+      lips.push(newLip);
+      _safeMint(msg.sender, COUNTER);
+      emit NewLip(msg.sender, COUNTER, _dna);
+      COUNTER++;
     }
+    // function mintMyNft(address toAddress) public onlyOwner(){
+    //     _safeMint(toAddress, COUNTER);
+    //     COUNTER++;
+    // }
 }
