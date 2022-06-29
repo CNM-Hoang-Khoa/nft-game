@@ -4,6 +4,7 @@ import './App.css';
 import { connect } from './redux/blockchain/blockchainActions';
 import { fetchData } from './redux/data/dataActions';
 import * as s from './styles/globalStyles';
+import LipRenderer from './components/lipRenderer';
 
 function App() {
   const dispatch = useDispatch();
@@ -74,6 +75,7 @@ function App() {
             {data.allLips.map((item, index) => {
               return (
                 <s.Container key={index} style={{ padding: '15px' }}>
+                  <LipRenderer lip={item} />
                   <s.SpacerXSmall />
                   <s.Container>
                     <s.TextDescription>ID: {item.id}</s.TextDescription>
