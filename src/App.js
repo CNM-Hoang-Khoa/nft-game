@@ -69,6 +69,24 @@ function App() {
           >
             CREATE NFT LIP
           </button>
+          <s.SpacerMedium />
+          <s.Container jc={'center'} fd={'row'} style={{ flexWrap: 'wrap' }}>
+            {data.allLips.map((item, index) => {
+              return (
+                <s.Container key={index} style={{ padding: '15px' }}>
+                  <s.SpacerXSmall />
+                  <s.Container>
+                    <s.TextDescription>ID: {item.id}</s.TextDescription>
+                    <s.TextDescription>DNA: {item.dna}</s.TextDescription>
+                    <s.TextDescription>LEVEL: {item.level}</s.TextDescription>
+                    <s.TextDescription>NAME: {item.name}</s.TextDescription>
+                    <s.TextDescription>RARITY: {item.rarity}</s.TextDescription>
+                    <s.SpacerXSmall />
+                  </s.Container>
+                </s.Container>
+              );
+            })}
+          </s.Container>
         </s.Container>
       )}
     </s.Screen>
