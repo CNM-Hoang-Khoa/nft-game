@@ -5,6 +5,7 @@ import { connect } from './redux/blockchain/blockchainActions';
 import { fetchData } from './redux/data/dataActions';
 import * as s from './styles/globalStyles';
 import LipRenderer from './components/lipRenderer';
+import _color from './assets/images/bg/_color.png';
 
 function App() {
   const dispatch = useDispatch();
@@ -39,8 +40,26 @@ function App() {
       });
   };
 
+  const levelUpLip = (_account, _id) => {
+    setLoading(true);
+    blockchain.lipToken.methods
+      .levelUp(_id)
+      .send({
+        from: _account,
+      })
+      .once('error', (err) => {
+        setLoading(false);
+        console.log('error while leveling up lip: ', err);
+      })
+      .then((receipt) => {
+        setLoading(false);
+        console.log('receipt of leveling up lip: ', receipt);
+        dispatch(fetchData(blockchain.account));
+      });
+  };
+
   return (
-    <s.Screen>
+    <s.Screen image={_color}>
       {blockchain.account === '' || blockchain.lipToken === null ? (
         <s.Container flex={1} ai={'center'} jc={'center'}>
           <s.TextTitle>Connect to the game</s.TextTitle>
@@ -84,6 +103,15 @@ function App() {
                     <s.TextDescription>NAME: {item.name}</s.TextDescription>
                     <s.TextDescription>RARITY: {item.rarity}</s.TextDescription>
                     <s.SpacerXSmall />
+                    <button
+                      // disabled={loading ? 1 : 0}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        levelUpLip(blockchain.account, item.id);
+                      }}
+                    >
+                      Level Up
+                    </button>
                   </s.Container>
                 </s.Container>
               );
