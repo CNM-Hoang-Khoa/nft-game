@@ -62,14 +62,20 @@ contract LipToken is ERC721, Ownable {
     }
 
     function getOwnerLips(address _owner) public view returns (Lip[] memory) {
-    Lip[] memory result = new Lip[](balanceOf(_owner));
-    uint256 counter = 0;
-    for (uint256 i = 0; i < lips.length; i++) {
-      if (ownerOf(i) == _owner) {
-        result[counter] = lips[i];
-        counter++;
+      Lip[] memory result = new Lip[](balanceOf(_owner));
+      uint256 counter = 0;
+      for (uint256 i = 0; i < lips.length; i++) {
+        if (ownerOf(i) == _owner) {
+          result[counter] = lips[i];
+          counter++;
+        }
       }
+      return result;
     }
-    return result;
-  }
+
+    function levelUp(uint256 _lipId) public {
+      require(ownerOf(_lipId) == msg.sender);
+      Lip storage lip = lips[_lipId];
+      lip.level++;
+    }
 }
