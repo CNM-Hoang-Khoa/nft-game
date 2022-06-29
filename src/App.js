@@ -1,8 +1,8 @@
-import logo from './logo.svg';
-import './App.css';
-import { useDispatch, useSelector } from 'react-redux';
-import { connect } from './redux/blockchain/blockchainActions';
 import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import './App.css';
+import { connect } from './redux/blockchain/blockchainActions';
+import * as s from './styles/globalStyles';
 
 function App() {
   const dispatch = useDispatch();
@@ -10,27 +10,25 @@ function App() {
 
   console.table(blockchain);
 
-  useEffect(() => {
-    dispatch(connect());
-  }, [dispatch]);
-
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+    <s.Screen>
+      <s.Container flex={1} ai={'center'} jc={'center'}>
+        <s.TextTitle>Connect to the game</s.TextTitle>
+        <s.SpacerSmall />
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            dispatch(connect());
+          }}
         >
-          Learn React
-        </a>
-      </header>
-    </div>
+          CONNECT
+        </button>
+        <s.SpacerXSmall />
+        {blockchain.errorMsg !== '' ? (
+          <s.TextDescription>{blockchain.errorMsg}</s.TextDescription>
+        ) : null}
+      </s.Container>
+    </s.Screen>
   );
 }
 
