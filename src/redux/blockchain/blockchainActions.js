@@ -1,6 +1,7 @@
 // constants
 import Web3 from 'web3';
 import LipToken from '../../contracts/LipToken.json';
+import { fetchData } from '../data/dataActions';
 
 const connectRequest = () => {
   return {
@@ -78,5 +79,6 @@ export const connect = () => {
 export const updateAccount = (account) => {
   return async (dispatch) => {
     dispatch(updateAccountRequest({ account: account }));
+    dispatch(fetchData(account));
   };
 };
