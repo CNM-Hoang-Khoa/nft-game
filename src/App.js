@@ -91,7 +91,7 @@ function App() {
           </button>
           <s.SpacerMedium />
           <s.Container jc={'center'} fd={'row'} style={{ flexWrap: 'wrap' }}>
-            {data.allLips.map((item, index) => {
+            {data.allOwnerLips.map((item, index) => {
               return (
                 <s.Container key={index} style={{ padding: '15px' }}>
                   <LipRenderer lip={item} />
