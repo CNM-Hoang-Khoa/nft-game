@@ -171,7 +171,7 @@ function App() {
                     <s.SpacerXSmall />
                     <button
                       className="btn btn-light my-2"
-                      // disabled={loading ? 1 : 0}
+                      disabled={loading ? 1 : 0}
                       onClick={(e) => {
                         e.preventDefault();
                         levelUpLip(blockchain.account, item.id);
