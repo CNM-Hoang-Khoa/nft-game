@@ -6,7 +6,8 @@ import { fetchData } from './redux/data/dataActions';
 import * as s from './styles/globalStyles';
 import LipRenderer from './components/lipRenderer';
 import _color from './assets/images/bg/_color.png';
-import TransferModel from './components/TransferModel';
+import TransferModal from './components/TransferModal';
+import TransferButton from './components/TransferButton';
 
 function App() {
   const dispatch = useDispatch();
@@ -14,6 +15,7 @@ function App() {
   const data = useSelector((state) => state.data);
   const [loading, setLoading] = useState(false);
   const [kissLipIds, setKissLipIds] = useState(['', '']);
+  const [transferingLip, setTransferingLip] = useState();
 
   console.table(data);
 
@@ -146,8 +148,8 @@ function App() {
               KISS
             </button>
           </s.Container>
-
           <s.SpacerMedium />
+          <TransferModal lip={transferingLip} />
           <s.Container jc={'center'} fd={'row'} style={{ flexWrap: 'wrap' }}>
             {data.allOwnerLips.map((item, index) => {
               return (
@@ -171,7 +173,7 @@ function App() {
                     >
                       Level Up
                     </button>
-                    <TransferModel />
+                    <TransferButton onClick={() => setTransferingLip(item)} />
                     {!item.isKissed &&
                       item.id !== kissLipIds[0] &&
                       item.id !== kissLipIds[1] && (
