@@ -20,6 +20,7 @@ contract LipToken is ERC721, Ownable {
       uint256 dna; // generate images like CryptoKitties
       uint8 level;
       uint8 rarity;
+      bool isKissed;
     }
 
     Lip[] public lips;
@@ -29,7 +30,7 @@ contract LipToken is ERC721, Ownable {
     function _createLip(string memory _name) internal {
       uint8 randRarity = uint8(_createRandomNum(100));
       uint256 randDna = _createRandomNum(10**16);
-      Lip memory newLip = Lip(_name, COUNTER, randDna, 1, randRarity);
+      Lip memory newLip = Lip(_name, COUNTER, randDna, 1, randRarity, false);
       lips.push(newLip);
       _safeMint(msg.sender, COUNTER);
       emit NewLip(msg.sender, COUNTER, randDna);
@@ -77,5 +78,17 @@ contract LipToken is ERC721, Ownable {
       require(ownerOf(_lipId) == msg.sender);
       Lip storage lip = lips[_lipId];
       lip.level++;
+    }
+
+    function kissTwoLips(uint256 _firstLipId, uint256 _secondLipId, string memory _name) public payable {
+      require(ownerOf(_firstLipId) == msg.sender);
+      require(ownerOf(_secondLipId) == msg.sender);
+      Lip storage firstLip = lips[_firstLipId];
+      Lip storage secondLip = lips[_secondLipId];
+      require(!firstLip.isKissed);
+      require(!secondLip.isKissed);
+      _createLip(_name);
+      firstLip.isKissed = true;
+      secondLip.isKissed = true;
     }
 }
