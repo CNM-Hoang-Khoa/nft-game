@@ -12,6 +12,7 @@ function App() {
   const blockchain = useSelector((state) => state.blockchain);
   const data = useSelector((state) => state.data);
   const [loading, setLoading] = useState(false);
+  const [kissLipIds, setKissLipIds] = useState(['', '']);
 
   console.table(data);
 
@@ -58,6 +59,41 @@ function App() {
       });
   };
 
+  const handleKissLipIdAdd = (_lipId) => {
+    const firstLipId = kissLipIds[1];
+    const secondLipId = _lipId;
+    setKissLipIds([firstLipId, secondLipId]);
+  };
+
+  const kissTwoLips = (_account) => {
+    setLoading(true);
+    const firstLipId = parseInt(kissLipIds[0]);
+    const secondLipId = parseInt(kissLipIds[1]);
+    if (!isNaN(firstLipId) && !isNaN(secondLipId)) {
+      blockchain.lipToken.methods
+        .kissTwoLips(
+          parseInt(kissLipIds[0]),
+          parseInt(kissLipIds[1]),
+          'Unknown'
+        )
+        .send({
+          from: _account,
+        })
+        .once('error', (err) => {
+          setLoading(false);
+          console.log('error while kissing: ', err);
+        })
+        .then((receipt) => {
+          setLoading(false);
+          console.log('receipt of kissing two lips: ', receipt);
+          dispatch(fetchData(blockchain.account));
+        });
+    } else {
+      window.alert('Please select two valid lips to kiss!');
+    }
+    setLoading(false);
+  };
+
   return (
     <s.Screen image={_color}>
       {blockchain.account === '' || blockchain.lipToken === null ? (
@@ -89,6 +125,24 @@ function App() {
           >
             CREATE NFT LIP
           </button>
+          <s.Container jc={'center'} ai={'center'}>
+            <s.Container jc={'center'} ai={'center'}>
+              <s.TextDescription>1st lip id: {kissLipIds[0]}</s.TextDescription>
+            </s.Container>
+            <s.Container jc={'center'} ai={'center'}>
+              <s.TextDescription>2nd lip id: {kissLipIds[1]}</s.TextDescription>
+            </s.Container>
+            <button
+              disabled={loading ? 1 : 0}
+              onClick={(e) => {
+                e.preventDefault();
+                kissTwoLips(blockchain.account);
+              }}
+            >
+              KISS
+            </button>
+          </s.Container>
+
           <s.SpacerMedium />
           <s.Container jc={'center'} fd={'row'} style={{ flexWrap: 'wrap' }}>
             {data.allOwnerLips.map((item, index) => {
@@ -112,6 +166,18 @@ function App() {
                     >
                       Level Up
                     </button>
+                    {!item.isKissed &&
+                      item.id !== kissLipIds[0] &&
+                      item.id !== kissLipIds[1] && (
+                        <button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            handleKissLipIdAdd(item.id);
+                          }}
+                        >
+                          Add to kiss list
+                        </button>
+                      )}
                   </s.Container>
                 </s.Container>
               );
