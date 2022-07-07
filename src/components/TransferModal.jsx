@@ -1,7 +1,31 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 import LipRenderer from './lipRenderer';
 
-export default function TransferModal({ lip }) {
+export default function TransferModal({ lip, onTransferFinish }) {
+  const [address, setAddress] = useState('');
+  const blockchain = useSelector((state) => state.blockchain);
+
+  const closeButtonRef = useRef(null);
+
+  const handleSendLip = () => {
+    if (blockchain !== null) {
+      blockchain.lipToken.methods
+        .simpleTransfer(lip.id, address)
+        .send({
+          from: blockchain.account,
+        })
+        .once('error', (err) => {
+          console.log('mint nft error: ', err);
+        })
+        .then((receipt) => {
+          console.log('mint nft receipt: ', receipt);
+          onTransferFinish?.();
+          closeButtonRef?.current?.click();
+        });
+    }
+  };
+
   return (
     <>
       <div
@@ -44,6 +68,8 @@ export default function TransferModal({ lip }) {
                     type="text"
                     className="form-control"
                     id="wallet-address"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
                   />
                 </div>
               </form>
@@ -53,11 +79,19 @@ export default function TransferModal({ lip }) {
                 type="button"
                 className="btn btn-secondary"
                 data-bs-dismiss="modal"
+                ref={closeButtonRef}
               >
                 Close
               </button>
-              <button type="button" className="btn btn-primary">
-                Send message
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleSendLip();
+                }}
+              >
+                Send NFT
               </button>
             </div>
           </div>

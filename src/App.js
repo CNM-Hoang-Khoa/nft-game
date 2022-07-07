@@ -149,7 +149,13 @@ function App() {
             </button>
           </s.Container>
           <s.SpacerMedium />
-          <TransferModal lip={transferingLip} />
+          <TransferModal
+            lip={transferingLip}
+            onTransferFinish={() => {
+              dispatch(fetchData(blockchain.account));
+              setTransferingLip(null);
+            }}
+          />
           <s.Container jc={'center'} fd={'row'} style={{ flexWrap: 'wrap' }}>
             {data.allOwnerLips.map((item, index) => {
               return (
