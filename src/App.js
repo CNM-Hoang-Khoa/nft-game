@@ -6,6 +6,8 @@ import { fetchData } from './redux/data/dataActions';
 import * as s from './styles/globalStyles';
 import LipRenderer from './components/lipRenderer';
 import _color from './assets/images/bg/_color.png';
+import TransferModal from './components/TransferModal';
+import TransferButton from './components/TransferButton';
 
 function App() {
   const dispatch = useDispatch();
@@ -13,6 +15,7 @@ function App() {
   const data = useSelector((state) => state.data);
   const [loading, setLoading] = useState(false);
   const [kissLipIds, setKissLipIds] = useState(['', '']);
+  const [transferingLip, setTransferingLip] = useState();
 
   console.table(data);
 
@@ -101,6 +104,7 @@ function App() {
           <s.TextTitle>Connect to the game</s.TextTitle>
           <s.SpacerSmall />
           <button
+            className="btn btn-primary my-2"
             onClick={(e) => {
               e.preventDefault();
               dispatch(connect());
@@ -117,6 +121,7 @@ function App() {
         <s.Container ai={'center'} style={{ padding: '24px' }}>
           <s.TextTitle>Welcome to the game</s.TextTitle>
           <button
+            className="btn btn-success my-2"
             disabled={loading ? 1 : 0}
             onClick={(e) => {
               e.preventDefault();
@@ -133,6 +138,7 @@ function App() {
               <s.TextDescription>2nd lip id: {kissLipIds[1]}</s.TextDescription>
             </s.Container>
             <button
+              className="btn btn-danger my-2"
               disabled={loading ? 1 : 0}
               onClick={(e) => {
                 e.preventDefault();
@@ -142,8 +148,14 @@ function App() {
               KISS
             </button>
           </s.Container>
-
           <s.SpacerMedium />
+          <TransferModal
+            lip={transferingLip}
+            onTransferFinish={() => {
+              dispatch(fetchData(blockchain.account));
+              setTransferingLip(null);
+            }}
+          />
           <s.Container jc={'center'} fd={'row'} style={{ flexWrap: 'wrap' }}>
             {data.allOwnerLips.map((item, index) => {
               return (
@@ -158,7 +170,8 @@ function App() {
                     <s.TextDescription>RARITY: {item.rarity}</s.TextDescription>
                     <s.SpacerXSmall />
                     <button
-                      // disabled={loading ? 1 : 0}
+                      className="btn btn-light my-2"
+                      disabled={loading ? 1 : 0}
                       onClick={(e) => {
                         e.preventDefault();
                         levelUpLip(blockchain.account, item.id);
@@ -166,10 +179,12 @@ function App() {
                     >
                       Level Up
                     </button>
+                    <TransferButton onClick={() => setTransferingLip(item)} />
                     {!item.isKissed &&
                       item.id !== kissLipIds[0] &&
                       item.id !== kissLipIds[1] && (
                         <button
+                          className="btn btn-danger my-2"
                           onClick={(e) => {
                             e.preventDefault();
                             handleKissLipIdAdd(item.id);

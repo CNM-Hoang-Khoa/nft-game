@@ -91,4 +91,8 @@ contract LipToken is ERC721, Ownable {
       firstLip.isKissed = true;
       secondLip.isKissed = true;
     }
+
+    function simpleTransfer(uint256 _lipId, address _receiver) public payable {
+      safeTransferFrom(msg.sender, _receiver, _lipId);
+    }
 }
