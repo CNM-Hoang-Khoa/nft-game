@@ -67,11 +67,30 @@ function App() {
 
   const kissTwoLips = (_account) => {
     setLoading(true);
-    blockchain.lipToken.methods
-      .kissTwoLips(parseInt(kissLipIds[0]), parseInt(kissLipIds[1]), 'Unknown')
-      .send({
-        from: _account,
-      });
+    const firstLipId = parseInt(kissLipIds[0]);
+    const secondLipId = parseInt(kissLipIds[1]);
+    if (!isNaN(firstLipId) && !isNaN(secondLipId)) {
+      blockchain.lipToken.methods
+        .kissTwoLips(
+          parseInt(kissLipIds[0]),
+          parseInt(kissLipIds[1]),
+          'Unknown'
+        )
+        .send({
+          from: _account,
+        })
+        .once('error', (err) => {
+          setLoading(false);
+          console.log('error while kissing: ', err);
+        })
+        .then((receipt) => {
+          setLoading(false);
+          console.log('receipt of kissing two lips: ', receipt);
+          dispatch(fetchData(blockchain.account));
+        });
+    } else {
+      window.alert('Please select two valid lips to kiss!');
+    }
     setLoading(false);
   };
 
@@ -120,7 +139,7 @@ function App() {
                 kissTwoLips(blockchain.account);
               }}
             >
-              KISS TWO LIPS
+              KISS
             </button>
           </s.Container>
 
