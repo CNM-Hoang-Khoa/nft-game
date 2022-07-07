@@ -6,6 +6,7 @@ import { fetchData } from './redux/data/dataActions';
 import * as s from './styles/globalStyles';
 import LipRenderer from './components/lipRenderer';
 import _color from './assets/images/bg/_color.png';
+import TransferModel from './components/TransferModel';
 
 function App() {
   const dispatch = useDispatch();
@@ -101,6 +102,7 @@ function App() {
           <s.TextTitle>Connect to the game</s.TextTitle>
           <s.SpacerSmall />
           <button
+            className="btn btn-primary my-2"
             onClick={(e) => {
               e.preventDefault();
               dispatch(connect());
@@ -117,6 +119,7 @@ function App() {
         <s.Container ai={'center'} style={{ padding: '24px' }}>
           <s.TextTitle>Welcome to the game</s.TextTitle>
           <button
+            className="btn btn-success my-2"
             disabled={loading ? 1 : 0}
             onClick={(e) => {
               e.preventDefault();
@@ -133,6 +136,7 @@ function App() {
               <s.TextDescription>2nd lip id: {kissLipIds[1]}</s.TextDescription>
             </s.Container>
             <button
+              className="btn btn-danger my-2"
               disabled={loading ? 1 : 0}
               onClick={(e) => {
                 e.preventDefault();
@@ -158,6 +162,7 @@ function App() {
                     <s.TextDescription>RARITY: {item.rarity}</s.TextDescription>
                     <s.SpacerXSmall />
                     <button
+                      className="btn btn-light my-2"
                       // disabled={loading ? 1 : 0}
                       onClick={(e) => {
                         e.preventDefault();
@@ -166,10 +171,12 @@ function App() {
                     >
                       Level Up
                     </button>
+                    <TransferModel />
                     {!item.isKissed &&
                       item.id !== kissLipIds[0] &&
                       item.id !== kissLipIds[1] && (
                         <button
+                          className="btn btn-danger my-2"
                           onClick={(e) => {
                             e.preventDefault();
                             handleKissLipIdAdd(item.id);
