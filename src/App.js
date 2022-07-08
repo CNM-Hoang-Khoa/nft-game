@@ -8,13 +8,15 @@ import LipRenderer from './components/lipRenderer';
 import _color from './assets/images/bg/_color.png';
 import TransferModal from './components/TransferModal';
 import TransferButton from './components/TransferButton';
+import KissCard from './components/KissCard';
+import TopOffCanvas from './components/TopOffCanvas';
 
 function App() {
   const dispatch = useDispatch();
   const blockchain = useSelector((state) => state.blockchain);
   const data = useSelector((state) => state.data);
   const [loading, setLoading] = useState(false);
-  const [kissLipIds, setKissLipIds] = useState(['', '']);
+  const [kissLips, setKissLips] = useState([null, null]);
   const [transferingLip, setTransferingLip] = useState();
 
   console.table(data);
@@ -63,20 +65,20 @@ function App() {
   };
 
   const handleKissLipIdAdd = (_lipId) => {
-    const firstLipId = kissLipIds[1];
-    const secondLipId = _lipId;
-    setKissLipIds([firstLipId, secondLipId]);
+    const firstLipId = kissLips[1];
+    const secondLipId = data.allLips[_lipId];
+    setKissLips([firstLipId, secondLipId]);
   };
 
   const kissTwoLips = (_account) => {
     setLoading(true);
-    const firstLipId = parseInt(kissLipIds[0]);
-    const secondLipId = parseInt(kissLipIds[1]);
+    const firstLipId = parseInt(kissLips[0]?.id);
+    const secondLipId = parseInt(kissLips[1]?.id);
     if (!isNaN(firstLipId) && !isNaN(secondLipId)) {
       blockchain.lipToken.methods
         .kissTwoLips(
-          parseInt(kissLipIds[0]),
-          parseInt(kissLipIds[1]),
+          parseInt(kissLips[0]?.id),
+          parseInt(kissLips[1]?.id),
           'Unknown'
         )
         .send({
@@ -90,6 +92,7 @@ function App() {
           setLoading(false);
           console.log('receipt of kissing two lips: ', receipt);
           dispatch(fetchData(blockchain.account));
+          setKissLips([null, null]);
         });
     } else {
       window.alert('Please select two valid lips to kiss!');
@@ -131,22 +134,31 @@ function App() {
             CREATE NFT LIP
           </button>
           <s.Container jc={'center'} ai={'center'}>
-            <s.Container jc={'center'} ai={'center'}>
-              <s.TextDescription>1st lip id: {kissLipIds[0]}</s.TextDescription>
-            </s.Container>
-            <s.Container jc={'center'} ai={'center'}>
-              <s.TextDescription>2nd lip id: {kissLipIds[1]}</s.TextDescription>
-            </s.Container>
-            <button
-              className="btn btn-danger my-2"
-              disabled={loading ? 1 : 0}
-              onClick={(e) => {
-                e.preventDefault();
-                kissTwoLips(blockchain.account);
-              }}
-            >
-              KISS
-            </button>
+            <TopOffCanvas buttonText="SHOW KISS LIST">
+              {(!kissLips[0] || !kissLips[1]) && (
+                <p style={{ textAlign: 'center' }}>
+                  Please select at least two lips!
+                </p>
+              )}
+              {kissLips[0] && kissLips[1] && (
+                <s.Container jc={'center'} ai={'center'} fd={'row'}>
+                  <KissCard lip={kissLips[0]} />
+                  <s.SpacerSmall />
+                  <button
+                    className="btn btn-danger my-2"
+                    disabled={loading ? 1 : 0}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      kissTwoLips(blockchain.account);
+                    }}
+                  >
+                    KISS
+                  </button>
+                  <s.SpacerSmall />
+                  <KissCard lip={kissLips[1]} />
+                </s.Container>
+              )}
+            </TopOffCanvas>
           </s.Container>
           <s.SpacerMedium />
           <TransferModal
@@ -169,30 +181,49 @@ function App() {
                     <s.TextDescription>NAME: {item.name}</s.TextDescription>
                     <s.TextDescription>RARITY: {item.rarity}</s.TextDescription>
                     <s.SpacerXSmall />
-                    <button
-                      className="btn btn-light my-2"
-                      disabled={loading ? 1 : 0}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        levelUpLip(blockchain.account, item.id);
-                      }}
-                    >
-                      Level Up
-                    </button>
-                    <TransferButton onClick={() => setTransferingLip(item)} />
-                    {!item.isKissed &&
-                      item.id !== kissLipIds[0] &&
-                      item.id !== kissLipIds[1] && (
+                    <s.Container fd="column">
+                      <div className="my-2">
                         <button
-                          className="btn btn-danger my-2"
+                          className="btn btn-light"
+                          disabled={loading ? 1 : 0}
                           onClick={(e) => {
                             e.preventDefault();
-                            handleKissLipIdAdd(item.id);
+                            levelUpLip(blockchain.account, item.id);
                           }}
                         >
-                          Add to kiss list
+                          Level Up
                         </button>
-                      )}
+                        <TransferButton
+                          onClick={() => setTransferingLip(item)}
+                        />
+                      </div>
+                      <div>
+                        {!item.isKissed &&
+                          item.id !== kissLips[0]?.id &&
+                          item.id !== kissLips[1]?.id && (
+                            <button
+                              className="btn btn-danger"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                handleKissLipIdAdd(item.id);
+                              }}
+                            >
+                              Add to kiss list
+                            </button>
+                          )}
+                        {item.isKissed && (
+                          <button className="btn btn-secondary" disabled>
+                            Kissed
+                          </button>
+                        )}
+                        {(item.id === kissLips[0]?.id ||
+                          item.id === kissLips[1]?.id) && (
+                          <button className="btn btn-warning" disabled>
+                            Waiting to kiss
+                          </button>
+                        )}
+                      </div>
+                    </s.Container>
                   </s.Container>
                 </s.Container>
               );
