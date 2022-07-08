@@ -7,7 +7,7 @@ export default function KissCard({ lip }) {
     <s.Container jc={'center'} ai={'center'}>
       <LipRenderer lip={lip} />
       <s.SpacerSmall />
-      {lip?.id && <s.TextDescription>ID: {lip?.id}</s.TextDescription>}
+      {lip?.id && <p>ID: {lip?.id}</p>}
     </s.Container>
   );
 }

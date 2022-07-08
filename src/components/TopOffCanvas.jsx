@@ -4,7 +4,7 @@ export default function TopOffCanvas({ buttonText, title, children }) {
   return (
     <>
       <button
-        class="btn btn-danger"
+        className="btn btn-danger"
         type="button"
         data-bs-toggle="offcanvas"
         data-bs-target="#offcanvasTop"
@@ -14,23 +14,23 @@ export default function TopOffCanvas({ buttonText, title, children }) {
       </button>
 
       <div
-        class="offcanvas offcanvas-top"
-        tabindex="-1"
+        className="offcanvas offcanvas-top"
+        tabIndex="-1"
         id="offcanvasTop"
         aria-labelledby="offcanvasTopLabel"
       >
-        <div class="offcanvas-header">
-          <h5 class="offcanvas-title" id="offcanvasTopLabel">
+        <div className="offcanvas-header">
+          <h5 className="offcanvas-title" id="offcanvasTopLabel">
             {title}
           </h5>
           <button
             type="button"
-            class="btn-close"
+            className="btn-close"
             data-bs-dismiss="offcanvas"
             aria-label="Close"
           ></button>
         </div>
-        <div class="offcanvas-body">{children}</div>
+        <div className="offcanvas-body">{children}</div>
       </div>
     </>
   );
