@@ -18,6 +18,7 @@ export default function TopOffCanvas({ buttonText, title, children }) {
         tabIndex="-1"
         id="offcanvasTop"
         aria-labelledby="offcanvasTopLabel"
+        style={{ height: '50vh' }}
       >
         <div className="offcanvas-header">
           <h5 className="offcanvas-title" id="offcanvasTopLabel">
